@@ -31,6 +31,8 @@ class OrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
 
+    protected static ?int $navigationSort = 5;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -119,8 +121,8 @@ class OrderResource extends Resource
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->columnSpan(4)
                                     ->reactive()
-                                    ->afterStateUpdated(fn ($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
-                                    ->afterStateUpdated(fn ($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
+                                    ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
 
                                 TextInput::make('quantity')
                                     ->numeric()
@@ -129,7 +131,7 @@ class OrderResource extends Resource
                                     ->minValue(1)
                                     ->columnSpan(2)
                                     ->reactive()
-                                    ->afterStateUpdated(fn ($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
+                                    ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
 
                                 TextInput::make('unit_amount')
                                     ->numeric()

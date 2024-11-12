@@ -22,6 +22,10 @@ class BrandResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-computer-desktop';
 
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?int $navigationSort = 2;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -33,7 +37,7 @@ class BrandResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation
+                                ->afterStateUpdated(fn(string $operation, $state, Set $set) => $operation
                                     === 'create' ? $set('slug', Str::slug($state)) : null),
 
                             TextInput::make('slug')

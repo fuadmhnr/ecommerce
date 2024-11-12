@@ -22,6 +22,8 @@ class CategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-tag';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form
@@ -33,7 +35,7 @@ class CategoryResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation
+                                ->afterStateUpdated(fn(string $operation, $state, Set $set) => $operation
                                     === 'create' ? $set('slug', Str::slug($state)) : null),
 
                             TextInput::make('slug')
