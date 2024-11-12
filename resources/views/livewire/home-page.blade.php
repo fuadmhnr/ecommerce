@@ -1,3 +1,6 @@
 <div>
-    <h3 class="text-4xl text-red-500">Hello From Livewire</h3>
+    <livewire:home.hero />
+    <livewire:home.brand />
+    <livewire:home.categories />
+    <livewire:home.customer-review />
 </div>
