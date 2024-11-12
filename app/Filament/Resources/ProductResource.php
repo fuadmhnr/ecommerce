@@ -2,28 +2,24 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
-use App\Models\Product;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
-use Filament\Forms\Components\Group;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
-use Illuminate\Database\Eloquent\Builder;
-use Filament\Forms\Components\MarkdownEditor;
 use App\Filament\Resources\ProductResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ProductResource\RelationManagers;
+use App\Models\Product;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Group;
+use Filament\Forms\Components\MarkdownEditor;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class ProductResource extends Resource
 {
@@ -59,7 +55,7 @@ class ProductResource extends Resource
 
                             MarkdownEditor::make('description')
                                 ->columnSpanFull()
-                                ->fileAttachmentsDirectory('products')
+                                ->fileAttachmentsDirectory('products'),
                         ])->columns(2),
 
                     Section::make('Images')->schema([
@@ -67,8 +63,8 @@ class ProductResource extends Resource
                             ->multiple()
                             ->directory('products')
                             ->maxFiles(5)
-                            ->reorderable()
-                    ])
+                            ->reorderable(),
+                    ]),
                 ])->columnSpan(2),
 
                 Group::make()->schema([
@@ -78,7 +74,7 @@ class ProductResource extends Resource
                             TextInput::make('price')
                                 ->numeric()
                                 ->required()
-                                ->prefix('IDR')
+                                ->prefix('IDR'),
                         ]),
 
                     Section::make('Additional')
@@ -109,9 +105,9 @@ class ProductResource extends Resource
                             ->required(),
 
                         Toggle::make('on_sale')
-                            ->required()
-                    ])
-                ])->columnSpan(1)
+                            ->required(),
+                    ]),
+                ])->columnSpan(1),
             ])->columns(3);
     }
 
@@ -139,14 +135,14 @@ class ProductResource extends Resource
             ])
             ->filters([
                 SelectFilter::make('category')
-                    ->relationship('category', 'name')
+                    ->relationship('category', 'name'),
             ])
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                ])
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

@@ -2,23 +2,19 @@
 
 namespace App\Filament\Resources;
 
-use Filament\Forms;
-use Filament\Tables;
+use App\Filament\Resources\BrandResource\Pages;
 use App\Models\Brand;
-use Filament\Forms\Set;
-use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Support\Str;
-use Filament\Resources\Resource;
+use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\FileUpload;
-use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\BrandResource\Pages;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\BrandResource\RelationManagers;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Form;
+use Filament\Forms\Set;
+use Filament\Resources\Resource;
+use Filament\Tables;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class BrandResource extends Resource
 {
@@ -37,7 +33,7 @@ class BrandResource extends Resource
                                 ->required()
                                 ->maxLength(255)
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(fn(string $operation, $state, Set $set) => $operation
+                                ->afterStateUpdated(fn (string $operation, $state, Set $set) => $operation
                                     === 'create' ? $set('slug', Str::slug($state)) : null),
 
                             TextInput::make('slug')
@@ -45,7 +41,7 @@ class BrandResource extends Resource
                                 ->disabled()
                                 ->dehydrated()
                                 ->maxLength(255)
-                                ->unique(Brand::class, 'slug', ignoreRecord: true)
+                                ->unique(Brand::class, 'slug', ignoreRecord: true),
                         ]),
 
                     FileUpload::make('image')
@@ -54,8 +50,8 @@ class BrandResource extends Resource
 
                     Toggle::make('is_active')
                         ->required()
-                        ->default(true)
-                ])
+                        ->default(true),
+                ]),
             ]);
     }
 
@@ -87,7 +83,7 @@ class BrandResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                ])
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

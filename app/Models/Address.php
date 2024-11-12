@@ -15,7 +15,7 @@ class Address extends Model
         'street_address',
         'city',
         'state',
-        'zip_code'
+        'zip_code',
     ];
 
     public function order(): BelongsTo
@@ -25,6 +25,6 @@ class Address extends Model
 
     public function getFullNameAttribute(): string
     {
-        return "{$this->first_name} {$this->last->name}";
+        return "{$this->first_name} {$this->last_name}";
     }
 }

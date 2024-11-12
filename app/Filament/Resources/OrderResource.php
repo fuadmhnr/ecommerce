@@ -3,11 +3,9 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
-use App\Filament\Resources\OrderResource\RelationManagers;
+use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
 use App\Models\Product;
-use Faker\Provider\ar_EG\Text;
-use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Placeholder;
@@ -25,8 +23,6 @@ use Filament\Tables;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Number;
 
 class OrderResource extends Resource
@@ -51,7 +47,7 @@ class OrderResource extends Resource
                         Select::make('payment_method')
                             ->options([
                                 'stripe' => 'Stripe',
-                                'cod' => 'Cash On Delivery'
+                                'cod' => 'Cash On Delivery',
                             ])
                             ->required(),
 
@@ -59,7 +55,7 @@ class OrderResource extends Resource
                             ->options([
                                 'pending' => 'Pending',
                                 'paid' => 'Paid',
-                                'failed' => 'Failed'
+                                'failed' => 'Failed',
                             ])
                             ->default('pending')
                             ->required(),
@@ -73,14 +69,14 @@ class OrderResource extends Resource
                                 'processing' => 'Processing',
                                 'shipped' => 'Shipped',
                                 'delivered' => 'Delivered',
-                                'cancelled' => 'Cancelled'
+                                'cancelled' => 'Cancelled',
                             ])
                             ->colors([
                                 'new' => 'info',
                                 'processing' => 'warning',
                                 'shipped' => 'info',
                                 'delivered' => 'success',
-                                'cancelled' => 'danger'
+                                'cancelled' => 'danger',
                             ])->icons([
                                 'new' => 'heroicon-m-sparkles',
                                 'processing' => 'heroicon-m-arrow-path',
@@ -94,7 +90,7 @@ class OrderResource extends Resource
                                 'idr' => 'IDR',
                                 'usd' => 'USD',
                                 'eur' => 'EUR',
-                                'sgd' => 'SGD'
+                                'sgd' => 'SGD',
                             ])
                             ->default('idr')
                             ->required(),
@@ -103,11 +99,11 @@ class OrderResource extends Resource
                             ->options([
                                 'fedex' => 'FedEx',
                                 'dhl' => 'DHL',
-                                'pos' => 'Pos Indonesia'
+                                'pos' => 'Pos Indonesia',
                             ]),
 
                         Textarea::make('notes')
-                            ->columnSpanFull()
+                            ->columnSpanFull(),
                     ])->columns(2),
 
                     Section::make('Order Items')->schema([
@@ -123,8 +119,8 @@ class OrderResource extends Resource
                                     ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                     ->columnSpan(4)
                                     ->reactive()
-                                    ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
-                                    ->afterStateUpdated(fn($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
+                                    ->afterStateUpdated(fn ($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
+                                    ->afterStateUpdated(fn ($state, Set $set) => $set('total_amount', Product::find($state)?->price ?? 0)),
 
                                 TextInput::make('quantity')
                                     ->numeric()
@@ -133,7 +129,7 @@ class OrderResource extends Resource
                                     ->minValue(1)
                                     ->columnSpan(2)
                                     ->reactive()
-                                    ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
+                                    ->afterStateUpdated(fn ($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount'))),
 
                                 TextInput::make('unit_amount')
                                     ->numeric()
@@ -146,14 +142,14 @@ class OrderResource extends Resource
                                     ->numeric()
                                     ->required()
                                     ->dehydrated()
-                                    ->columnSpan(3)
+                                    ->columnSpan(3),
                             ])->columns(12),
 
                         Placeholder::make('grand_total_placeholder')
                             ->label('Grand Total')
                             ->content(function (Get $get, Set $set) {
                                 $total = 0;
-                                if (!$repeaters = $get('orderItems')) {
+                                if (! $repeaters = $get('orderItems')) {
                                     return $total;
                                 }
 
@@ -162,13 +158,14 @@ class OrderResource extends Resource
                                 }
 
                                 $set('grand_total', $total);
+
                                 return Number::currency($total, 'IDR');
                             }),
 
                         Hidden::make('grand_total')
-                            ->default(0)
-                    ])
-                ])->columnSpanFull()
+                            ->default(0),
+                    ]),
+                ])->columnSpanFull(),
             ]);
     }
 
@@ -209,10 +206,10 @@ class OrderResource extends Resource
                         'processing' => 'Processing',
                         'shipped' => 'Shipped',
                         'delivered' => 'Delivered',
-                        'cancelled' => 'Cancelled'
+                        'cancelled' => 'Cancelled',
                     ])
                     ->searchable()
-                    ->sortable()
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -222,7 +219,7 @@ class OrderResource extends Resource
                     Tables\Actions\ViewAction::make(),
                     Tables\Actions\EditAction::make(),
                     Tables\Actions\DeleteAction::make(),
-                ])
+                ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -244,7 +241,7 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            AddressRelationManager::class,
         ];
     }
 

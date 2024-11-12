@@ -19,7 +19,7 @@ class Product extends Model
         'is_active',
         'is_featured',
         'is_stock',
-        'on_sale'
+        'on_sale',
     ];
 
     protected function casts(): array

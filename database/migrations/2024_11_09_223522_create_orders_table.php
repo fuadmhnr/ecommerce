@@ -22,7 +22,7 @@ return new class extends Migration
                 'processing',
                 'shipped',
                 'delivered',
-                'canceled'
+                'canceled',
             ])->default('new');
             $table->string('currency')->nullable();
             $table->decimal('shipping_amount', 10, 2)->nullable();
