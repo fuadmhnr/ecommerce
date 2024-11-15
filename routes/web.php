@@ -28,7 +28,7 @@ Route::prefix('my-orders')->group(function () {
 
 Route::prefix('products')->group(function () {
     Route::get('/', ProductPage::class)->name('product.index');
-    Route::get('/{product}', ProductDetailPage::class)->name('product.show');
+    Route::get('/{slug}', ProductDetailPage::class)->name('product.show');
 });
 
 Route::get('/login', Login::class);
