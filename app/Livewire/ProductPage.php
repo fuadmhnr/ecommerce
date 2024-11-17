@@ -5,27 +5,69 @@ namespace App\Livewire;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use Illuminate\Contracts\View\View;
 use Livewire\Attributes\Title;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
 
-#[Title('Products - ECommerce')]
+#[Title("Products - ECommerce")]
 class ProductPage extends Component
 {
     use WithPagination;
 
-    public function render()
+    #[Url]
+    public array $selectedCategory = [];
+
+    #[Url]
+    public array $selectedBrand = [];
+
+    #[Url]
+    public $featured;
+
+    #[Url]
+    public $onSale;
+
+    public $priceRange = 25000000;
+
+    public function render(): View
     {
-        $products = Product::query()->whereIsActive(1)->paginate(6);
+        $productQuery = Product::query()->where("is_active", 1);
+
+        if (!empty($this->selectedCategory)) {
+            $productQuery->whereIn("category_id", $this->selectedCategory);
+        }
+
+        if (!empty($this->selectedBrand)) {
+            $productQuery->whereIn("brand_id", $this->selectedBrand);
+        }
+
+        if ($this->featured) {
+            $productQuery->where("is_featured", $this->featured);
+        }
+
+        if ($this->onSale) {
+            $productQuery->where("on_sale", $this->onSale);
+        }
+
+        if ($this->priceRange) {
+            $productQuery->whereBetween("price", [0, $this->priceRange]);
+        }
+
+        $products = $productQuery->paginate(9);
+
         $brands = Brand::query()
-            ->select('id', 'name', 'slug')
+            ->select("id", "name", "slug")
             ->whereIsActive(1)
             ->get();
         $categories = Category::query()
-            ->select('id', 'name', 'slug')
+            ->select("id", "name", "slug")
             ->whereIsActive(1)
             ->get();
 
-        return view('livewire.product-page', compact('products', 'brands', 'categories'));
+        return view(
+            "livewire.product-page",
+            compact("products", "brands", "categories")
+        );
     }
 }
