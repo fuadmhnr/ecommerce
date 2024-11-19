@@ -28,7 +28,11 @@ class ProductPage extends Component
     #[Url]
     public $onSale;
 
+    #[Url]
     public $priceRange = 25000000;
+
+    #[Url]
+    public $sort = 'latest';
 
     public function render(): View
     {
@@ -52,6 +56,14 @@ class ProductPage extends Component
 
         if ($this->priceRange) {
             $productQuery->whereBetween("price", [0, $this->priceRange]);
+        }
+
+        if ($this->sort == 'latest') {
+            $productQuery->latest();
+        }
+
+        if ($this->sort == 'price') {
+            $productQuery->orderBy('price', 'desc');
         }
 
         $products = $productQuery->paginate(9);
