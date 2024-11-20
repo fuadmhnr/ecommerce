@@ -40,6 +40,40 @@ class CartManagement
         return count($cartItems);
     }
 
+    static public function addItemToCartWithQuantity($productId, $quantity = 1)
+    {
+        $cartItems = self::getCartItemsFromCookie();
+        $existingItem = null;
+
+        foreach ($cartItems as $key => $item) {
+            if ($item['product_id'] == $productId) {
+                $existingItem = $key;
+                break;
+            }
+        }
+
+        if (!is_null($existingItem)) {
+            $cartItems[$existingItem]['quantity'] = $quantity;
+            $cartItems[$existingItem]['total_amount'] = $quantity * $cartItems[$existingItem]['unit_amount'];
+        } else {
+            $product = Product::where('id', $productId)->first(['id', 'name', 'price', 'images']);
+            if ($product) {
+                $cartItems[] = [
+                    'product_id' => $productId,
+                    'name' => $product->name,
+                    'image' => $product->images[0],
+                    'quantity' => $quantity,
+                    'unit_amount' => $product->price,
+                    'total_amount' => $quantity * $product->price
+                ];
+            }
+        }
+
+        self::addCartItemsToCookie($cartItems);
+        return count($cartItems);
+    }
+
+
     static public function removeCartItem($productId)
     {
         $cartItems = self::getCartItemsFromCookie();
