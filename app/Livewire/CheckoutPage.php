@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Helpers\CartManagement;
+use App\Jobs\SendMailJob;
 use App\Models\Address;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
@@ -97,6 +98,15 @@ class CheckoutPage extends Component
 
         $order->orderItems()->createMany($cartItems);
         CartManagement::clearCartItems();
+
+        dispatch(new SendMailJob(
+            $this->firstName,
+            $this->lastName,
+            Auth::user()->email,
+            $order->id,
+            'pending',
+            $cartItems
+        ));
 
         return redirect($redirectUrl);
     }
