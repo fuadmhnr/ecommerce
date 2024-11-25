@@ -44,7 +44,7 @@ Route::middleware(['auth'])->group(function () {
 
     Route::prefix('my-orders')->group(function () {
         Route::get('/', MyOrderPage::class);
-        Route::get('/{order}', MyOrderDetailPage::class);
+        Route::get('/{orderId}', MyOrderDetailPage::class);
     });
 
     Route::get('/success', SuccessPage::class)->name('success');
